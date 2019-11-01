@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     public void escribirArchivo(){
         String encriptado = this.textEncoded.getText().toString();
         String desencriptado = this.textDecoded.getText().toString();
+        int cont =1;
 
         //tratamiento de la fecha y la hora
         Date date = new Date();
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             archivo.write("\n");
             archivo.write("<content_file>");
             archivo.write("\n");
-            archivo.write("     <datos>");
+            archivo.write("     <datos "+ "id='"+cont+"'>");
             archivo.write("\n");
             archivo.write("         <time>"+hourdateFormat.format(date)+"</time>");
             archivo.write("\n");
@@ -143,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     archivo.write("         <encriptado>"+array.get(i)+"</encriptado>");
                     archivo.write("\n");
                 }
+                cont++;
             }
             archivo.write("     </datos>");
             archivo.write("\n");
