@@ -26,6 +26,21 @@ public class MainActivity extends AppCompatActivity {
         this.button = findViewById(R.id.btnEntrada);
         this.button_salida = findViewById(R.id.btnSalida);
         this.button_create_xml = findViewById(R.id.btnXml);
+        //boton con el cual llama la funcion de encriptado y ejecuta al click
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                crypt(v);
+            }
+        });
+
+        //boton llamado a la funcion desencriptado al detectar evento click
+        button_salida.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                descrypt(v);
+            }
+        });
     }
 
     //metodo de encriptado
