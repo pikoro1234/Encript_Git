@@ -124,17 +124,28 @@ public class MainActivity extends AppCompatActivity {
         array.add(encriptado);
         array.add(desencriptado);
         try{
-            OutputStreamWriter archivo = new OutputStreamWriter(openFileOutput("prueba.xml", Context.MODE_PRIVATE));
+            OutputStreamWriter archivo = new OutputStreamWriter(openFileOutput("prueba.xml", Context.MODE_APPEND));
             archivo.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             archivo.write("\n");
             archivo.write("<content_file>");
             archivo.write("\n");
-            archivo.write("     <time>"+hourdateFormat.format(date)+"</time>");
+            archivo.write("     <datos>");
+            archivo.write("\n");
+            archivo.write("         <time>"+hourdateFormat.format(date)+"</time>");
             archivo.write("\n");
             for (int i = 0; i < array.size(); i++){
-                archivo.write("     <dato>"+array.get(i)+"</dato>");
-                archivo.write("\n");
+
+                if (i == array.size()-1){
+                    archivo.write("         <desencriptado>"+array.get(i)+"</desencriptado>");
+                    archivo.write("\n");
                 }
+                else{
+                    archivo.write("         <encriptado>"+array.get(i)+"</encriptado>");
+                    archivo.write("\n");
+                }
+            }
+            archivo.write("     </datos>");
+            archivo.write("\n");
             archivo.write("</content_file>");
             archivo.close();
 
