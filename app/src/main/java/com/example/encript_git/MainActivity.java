@@ -25,7 +25,10 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
@@ -113,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
     public void escribirArchivo(){
         String encriptado = this.textEncoded.getText().toString();
         String desencriptado = this.textDecoded.getText().toString();
+
+        //tratamiento de la fecha y la hora
+        Date date = new Date();
+        DateFormat hourdateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         ArrayList<String> array = new ArrayList<String>();
         array.add(encriptado);
         array.add(desencriptado);
@@ -120,13 +127,15 @@ public class MainActivity extends AppCompatActivity {
             OutputStreamWriter archivo = new OutputStreamWriter(openFileOutput("prueba.xml", Context.MODE_PRIVATE));
             archivo.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             archivo.write("\n");
-            archivo.write("<Datos>");
+            archivo.write("<content_file>");
+            archivo.write("\n");
+            archivo.write("     <time>"+hourdateFormat.format(date)+"</time>");
             archivo.write("\n");
             for (int i = 0; i < array.size(); i++){
                 archivo.write("     <dato>"+array.get(i)+"</dato>");
                 archivo.write("\n");
                 }
-            archivo.write("</Datos>");
+            archivo.write("</content_file>");
             archivo.close();
 
             leerArchivo();
