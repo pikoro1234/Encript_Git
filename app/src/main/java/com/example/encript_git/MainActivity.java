@@ -14,6 +14,8 @@ import android.widget.Toast;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,7 +23,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
     //variables de bottones y textview
@@ -105,22 +110,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //metodo escritura de archivo prueba de escritura en XML
-    /*public void escribirArchivo(){
+    public void escribirArchivo(){
         String encriptado = this.textEncoded.getText().toString();
         String desencriptado = this.textDecoded.getText().toString();
+        ArrayList<String> array = new ArrayList<String>();
+        array.add(encriptado);
+        array.add(desencriptado);
         try{
             OutputStreamWriter archivo = new OutputStreamWriter(openFileOutput("prueba.xml", Context.MODE_PRIVATE));
-
-            for (int i = 0; i<encriptado.length(); i++){
-                if (archivo.length()){
-                    archivo.write("\n");
+            archivo.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            archivo.write("\n");
+            archivo.write("<Datos>");
+            archivo.write("\n");
+            for (int i = 0; i < array.size(); i++){
+                archivo.write("     <dato>"+array.get(i)+"</dato>");
+                archivo.write("\n");
                 }
-                archivo.write(encriptado.charAt(i));
-            }
-
-            archivo.write(encriptado);
-            archivo.write(desencriptado);
-
+            archivo.write("</Datos>");
             archivo.close();
 
             leerArchivo();
@@ -128,76 +134,17 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Archivo", "error al escribir archivo");
         }
 
-    }*/
-
-    public void escribirArchivo(){
-        final String xmlFile = "Datos";
-        String encriptation = "encriptation";
-        String desencriptation = "desencriptation";
-
-        String texto_encriptado = this.textEncoded.getText().toString();
-        String texto_desencriptado = this.textDecoded.getText().toString();
-        try{
-            FileOutputStream fos = new FileOutputStream("newprueba.xml");
-            FileOutputStream fileos = getApplicationContext().openFileOutput(xmlFile, Context.MODE_PRIVATE);
-            XmlSerializer xmlSerializer = Xml.newSerializer();
-            StringWriter writer = new StringWriter();
-            xmlSerializer.setOutput(writer);
-            xmlSerializer.startDocument("UTF-8",true);
-            xmlSerializer.startTag(null, "Datos");
-            xmlSerializer.startTag(null, "encriptation");
-            xmlSerializer.text(texto_encriptado);
-            xmlSerializer.endTag(null, "encriptation");
-            xmlSerializer.startTag(null, "desencriptation");
-            xmlSerializer.text(texto_desencriptado);
-            xmlSerializer.endTag(null, "desencriptation");
-            xmlSerializer.endTag(null, "Datos");
-            xmlSerializer.endDocument();
-            xmlSerializer.flush();
-            String dataWrite = writer.toString();
-            fileos.write(dataWrite.getBytes());
-            fileos.close();
-            leerArchivo();
-
-
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }catch (IllegalArgumentException e){
-            e.printStackTrace();
-        }catch (IllegalStateException e){
-            e.printStackTrace();
-        }
-
     }
 
     //metodo para leer archivos
     public void leerArchivo(){
-        final String xmlFile = "Datos";
-        ArrayList<String> Datos = new ArrayList<String>();
         try{
-             FileInputStream fis = getApplicationContext().openFileInput(xmlFile);
-             InputStreamReader isr = new InputStreamReader(fis);
-             char[] inputBuffer = new char[fis.available()];
-             isr.read(inputBuffer);
-             String data = new String(inputBuffer);
-             isr.close();
-             fis.close();
-        }catch (FileNotFoundException e3){
-            Log.e("Datos", "error de lectura archivo catch 1");
-        }
-        catch (IOException e){
-            Log.e("Datos", "error al leer archivo cath 2");
-        }
-    }
-   /* public void leerArchivo(){
-        try{
-            BufferedReader aux = new BufferedReader(new InputStreamReader(openFileInput("newprueba.xml")));
+            BufferedReader aux = new BufferedReader(new InputStreamReader(openFileInput("prueba.xml")));
             String texto = aux.readLine();
             Toast.makeText(this, "texto en "+ texto, Toast.LENGTH_LONG).show();
         }catch (Exception e) {
             Log.e("Archivo", "error al leer el archivo");
+            e.printStackTrace();
         }
-    }*/
+    }
 }
