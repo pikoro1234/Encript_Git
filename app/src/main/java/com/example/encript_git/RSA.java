@@ -24,6 +24,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+//clase copiada del codigo brindado por alvaro
 public class RSA {
     public java.security.PrivateKey PrivateKey = null;
     public java.security.PublicKey PublicKey = null;
