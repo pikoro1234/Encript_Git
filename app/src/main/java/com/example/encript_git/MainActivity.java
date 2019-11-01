@@ -2,10 +2,17 @@ package com.example.encript_git;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class MainActivity extends AppCompatActivity {
     //variables de bottones y textview
@@ -39,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 descrypt(v);
+            }
+        });
+
+        button_create_xml.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                escribirArchivo();
             }
         });
     }
@@ -83,5 +97,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //metodo escritura de archivo
+    public void escribirArchivo(){
+        String encriptado = this.textEncoded.getText().toString();
+        String desencriptado = this.textDecoded.getText().toString();
+        try{
+            OutputStreamWriter archivo = new OutputStreamWriter(openFileOutput("prueba.xml", Context.MODE_PRIVATE));
 
+            for (int i = 0; i<encriptado.length(); i++){
+                archivo.write(encriptado.charAt(i));
+            }
+
+            archivo.write(encriptado);
+            archivo.write(desencriptado);
+
+            archivo.close();
+
+            leerArchivo();
+        }catch (Exception e){
+            Log.e("Archivo", "error al escribir archivo");
+        }
+
+    }
+
+    //metodo para leer archivos
+    public void leerArchivo(){
+        try{
+            BufferedReader aux = new BufferedReader(new InputStreamReader(openFileInput("prueba.xml")));
+            String texto = aux.readLine();
+            Toast.makeText(this, "texto en "+ texto, Toast.LENGTH_LONG).show();
+        }catch (Exception e) {
+            Log.e("Archivo", "error al leer el archivo");
+        }
+    }
 }
