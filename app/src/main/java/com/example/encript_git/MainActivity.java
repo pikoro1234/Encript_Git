@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //metodo escritura de archivo
+    //metodo escritura de archivo prueba de escritura en XML
     public void escribirArchivo(){
         String encriptado = this.textEncoded.getText().toString();
         String desencriptado = this.textDecoded.getText().toString();
