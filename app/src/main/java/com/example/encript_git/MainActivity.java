@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         //tratamiento de la fecha y la hora
         Date date = new Date();
-        DateFormat hourdateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        DateFormat hourdateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         ArrayList<String> array = new ArrayList<String>();
         array.add(encriptado);
         array.add(desencriptado);
