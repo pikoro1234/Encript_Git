@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
@@ -149,7 +150,8 @@ public class MainActivity extends AppCompatActivity {
         String encriptado = this.textEncoded.getText().toString();
         String desencriptado = this.textDecoded.getText().toString();
         try{
-            BufferedReader aux = new BufferedReader(new InputStreamReader(openFileInput("prueba.xml")));
+            InputStream lectura = getApplication().openFileInput("prueba.xml");
+            BufferedReader aux = new BufferedReader(new InputStreamReader(lectura));
             StringBuilder objeto = new StringBuilder();
             String linea;
             String archivo_concat = "";
@@ -161,13 +163,13 @@ public class MainActivity extends AppCompatActivity {
                     "\t\t<desencriptado>"+desencriptado+"</desencriptado>\n"+
                     "\t</data>\n"+
                     "</content_file>\n";
-                    objeto.append(archivo_concat);
+                    objeto.append(linea);
                 }else{
                     objeto.append(linea).append("\n");
                 }
 
             }
-            //Toast.makeText(this, "texto en "+ texto, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "texto en "+ archivo_concat, Toast.LENGTH_LONG).show();
         }catch (Exception e) {
             Log.e("Archivo", "error al leer el archivo");
             e.printStackTrace();
