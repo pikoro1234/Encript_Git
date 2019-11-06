@@ -131,34 +131,9 @@ public class MainActivity extends AppCompatActivity {
                 "\t</datos>\n"+
                 "</content_file>\n";
         try{
-            OutputStreamWriter archivo = new OutputStreamWriter(getApplication().openFileOutput("prueba.xml", Context.MODE_PRIVATE));
+            OutputStreamWriter archivo = new OutputStreamWriter(getApplication().openFileOutput("prueba.xml", Context.MODE_APPEND));
             archivo.write(contenedor);
             archivo.close();
-           /* archivo.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            archivo.write("\n");
-            archivo.write("<content_file>");
-            archivo.write("\n");
-            archivo.write("     <datos "+ "id='"+cont+"'>");
-            archivo.write("\n");
-            archivo.write("         <time>"+hourdateFormat.format(date)+"</time>");
-            archivo.write("\n");
-            for (int i = 0; i < array.size(); i++){
-
-                if (i == array.size()-1){
-                    archivo.write("         <desencriptado>"+array.get(i)+"</desencriptado>");
-                    archivo.write("\n");
-                }
-                else{
-                    archivo.write("         <encriptado>"+array.get(i)+"</encriptado>");
-                    archivo.write("\n");
-                }
-                cont++;
-            }
-            archivo.write("     </datos>");
-            archivo.write("\n");
-            archivo.write("</content_file>");
-            archivo.close();*/
-
             leerArchivo();
         }catch (Exception e){
             Log.e("Archivo", "error al escribir archivo");
@@ -168,10 +143,31 @@ public class MainActivity extends AppCompatActivity {
 
     //metodo para leer archivos
     public void leerArchivo(){
+        //tratamiento de la fecha y la hora
+        Date date = new Date();
+        DateFormat hourdateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String encriptado = this.textEncoded.getText().toString();
+        String desencriptado = this.textDecoded.getText().toString();
         try{
             BufferedReader aux = new BufferedReader(new InputStreamReader(openFileInput("prueba.xml")));
-            String texto = aux.readLine();
-            Toast.makeText(this, "texto en "+ texto, Toast.LENGTH_LONG).show();
+            StringBuilder objeto = new StringBuilder();
+            String linea;
+            String archivo_concat = "";
+            while ((linea = aux.readLine()) !=null){
+                if (linea.equals("</content_file>")){
+                    archivo_concat +="<data id='2'>\n"+
+                    "\t\t<time>"+hourdateFormat.format(date)+"</time>\n"+
+                    "\t\t<encriptado>"+encriptado+"</encriptado>\n"+
+                    "\t\t<desencriptado>"+desencriptado+"</desencriptado>\n"+
+                    "\t</data>\n"+
+                    "</content_file>\n";
+                    objeto.append(archivo_concat);
+                }else{
+                    objeto.append(linea).append("\n");
+                }
+
+            }
+            //Toast.makeText(this, "texto en "+ texto, Toast.LENGTH_LONG).show();
         }catch (Exception e) {
             Log.e("Archivo", "error al leer el archivo");
             e.printStackTrace();
