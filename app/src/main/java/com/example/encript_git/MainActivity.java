@@ -132,10 +132,9 @@ public class MainActivity extends AppCompatActivity {
                 "\t</datos>\n"+
                 "</content_file>\n";
         try{
-            OutputStreamWriter archivo = new OutputStreamWriter(getApplication().openFileOutput("prueba.xml", Context.MODE_APPEND));
+            OutputStreamWriter archivo = new OutputStreamWriter(getApplication().openFileOutput("prueba.xml", Context.MODE_PRIVATE));
             archivo.write(contenedor);
             archivo.close();
-            leerArchivo();
         }catch (Exception e){
             Log.e("Archivo", "error al escribir archivo");
         }
@@ -143,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //metodo para leer archivos
-    public void leerArchivo(){
+    public String leerArchivo(){
         //tratamiento de la fecha y la hora
         Date date = new Date();
         DateFormat hourdateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -155,16 +154,16 @@ public class MainActivity extends AppCompatActivity {
             StringBuilder objeto = new StringBuilder();
             String linea;
             String archivo_concat = "";
-            while ((linea = aux.readLine()) !=null){
-                if (linea.equals("</content_file>")){
-                    archivo_concat +="<data id='2'>\n"+
-                    "\t\t<time>"+hourdateFormat.format(date)+"</time>\n"+
-                    "\t\t<encriptado>"+encriptado+"</encriptado>\n"+
-                    "\t\t<desencriptado>"+desencriptado+"</desencriptado>\n"+
-                    "\t</data>\n"+
-                    "</content_file>\n";
+            while ((linea = aux.readLine()) !=null) {
+                if (linea.equals("</content_file>")) {
+                    archivo_concat += "<data id='2'>\n" +
+                            "\t\t<time>" + hourdateFormat.format(date) + "</time>\n" +
+                            "\t\t<encriptado>" + encriptado + "</encriptado>\n" +
+                            "\t\t<desencriptado>" + desencriptado + "</desencriptado>\n" +
+                            "\t</data>\n" +
+                            "</content_file>\n";
                     objeto.append(linea);
-                }else{
+                } else {
                     objeto.append(linea).append("\n");
                 }
 
@@ -174,5 +173,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Archivo", "error al leer el archivo");
             e.printStackTrace();
         }
+        return objeto;
     }
 }
