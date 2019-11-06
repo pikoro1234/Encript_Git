@@ -70,8 +70,11 @@ public class MainActivity extends AppCompatActivity {
         button_create_xml.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                escribirArchivo();
-                leerArchivo();
+                try {
+                    escribirArchivo();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //metodo escritura de archivo prueba de escritura en XML
-    public void escribirArchivo(){
+    public void escribirArchivo() throws IOException {
         String encriptado = this.textEncoded.getText().toString();
         String desencriptado = this.textDecoded.getText().toString();
         int cont =1;
@@ -131,10 +134,12 @@ public class MainActivity extends AppCompatActivity {
                 "\t\t<desencriptado>"+desencriptado+"</desencriptado>\n"+
                 "\t</datos>\n"+
                 "</content_file>\n";
+        leerArchivo();
         try{
             OutputStreamWriter archivo = new OutputStreamWriter(getApplication().openFileOutput("prueba.xml", Context.MODE_PRIVATE));
             archivo.write(contenedor);
             archivo.close();
+            Toast.makeText(this, "texto en "+ contenedor, Toast.LENGTH_LONG).show();
         }catch (Exception e){
             Log.e("Archivo", "error al escribir archivo");
         }
@@ -142,37 +147,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //metodo para leer archivos
-    public String leerArchivo(){
+    public String leerArchivo() throws IOException {
         //tratamiento de la fecha y la hora
         Date date = new Date();
         DateFormat hourdateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String encriptado = this.textEncoded.getText().toString();
         String desencriptado = this.textDecoded.getText().toString();
-        try{
-            InputStream lectura = getApplication().openFileInput("prueba.xml");
-            BufferedReader aux = new BufferedReader(new InputStreamReader(lectura));
-            StringBuilder objeto = new StringBuilder();
-            String linea;
-            String archivo_concat = "";
+        InputStream lectura = getApplication().openFileInput("prueba.xml");
+        BufferedReader aux = new BufferedReader(new InputStreamReader(lectura));
+        StringBuilder objeto = new StringBuilder();
+        String linea;
+        String archivo_concat = "";
             while ((linea = aux.readLine()) !=null) {
                 if (linea.equals("</content_file>")) {
-                    archivo_concat += "<data id='2'>\n" +
-                            "\t\t<time>" + hourdateFormat.format(date) + "</time>\n" +
-                            "\t\t<encriptado>" + encriptado + "</encriptado>\n" +
-                            "\t\t<desencriptado>" + desencriptado + "</desencriptado>\n" +
-                            "\t</data>\n" +
-                            "</content_file>\n";
-                    objeto.append(linea);
-                } else {
-                    objeto.append(linea).append("\n");
+                    if (linea.isEmpty()){
+                        archivo_concat += "\t<data id = '2'>\n" +
+                                "\t\t<time>" + hourdateFormat.format(date) + "</time>\n" +
+                                "\t\t<encriptado>" + encriptado + "</encriptado>\n" +
+                                "\t\t<desencriptado>" + desencriptado + "</desencriptado>\n" +
+                                "\t</data>\n" +
+                                "</content_file>\n";
+                        objeto.append(archivo_concat);
+                    }else {
+                        objeto.append(linea).append("\n");
+                    }
                 }
 
             }
-            Toast.makeText(this, "texto en "+ archivo_concat, Toast.LENGTH_LONG).show();
-        }catch (Exception e) {
-            Log.e("Archivo", "error al leer el archivo");
-            e.printStackTrace();
-        }
-        return objeto;
+        System.out.println("AQUI EL FICHERO"+objeto.toString());
+            lectura.close();
+        //Toast.makeText(this, "texto en "+ archivo_concat, Toast.LENGTH_LONG).show();
+        return objeto.toString();
     }
 }
