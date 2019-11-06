@@ -117,16 +117,24 @@ public class MainActivity extends AppCompatActivity {
         String encriptado = this.textEncoded.getText().toString();
         String desencriptado = this.textDecoded.getText().toString();
         int cont =1;
-
         //tratamiento de la fecha y la hora
         Date date = new Date();
         DateFormat hourdateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(encriptado);
-        array.add(desencriptado);
+
+        //CONSTRUCCION DE ESQUEMA PRINCIPAL
+        String contenedor="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+
+                "<content_file>\n"+
+                "\t<datos id = '1'>\n"+
+                "\t\t<time>"+hourdateFormat.format(date)+"</time>\n"+
+                "\t\t<encriptado>"+encriptado+"</encriptado>\n"+
+                "\t\t<desencriptado>"+desencriptado+"</desencriptado>\n"+
+                "\t</datos>\n"+
+                "</content_file>\n";
         try{
-            OutputStreamWriter archivo = new OutputStreamWriter(openFileOutput("prueba.xml", Context.MODE_APPEND));
-            archivo.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            OutputStreamWriter archivo = new OutputStreamWriter(getApplication().openFileOutput("prueba.xml", Context.MODE_PRIVATE));
+            archivo.write(contenedor);
+            archivo.close();
+           /* archivo.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             archivo.write("\n");
             archivo.write("<content_file>");
             archivo.write("\n");
@@ -149,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             archivo.write("     </datos>");
             archivo.write("\n");
             archivo.write("</content_file>");
-            archivo.close();
+            archivo.close();*/
 
             leerArchivo();
         }catch (Exception e){
