@@ -1,16 +1,16 @@
 package com.example.encript_git;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -21,7 +21,6 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private char simbolo = '"';
     private Button button;
     private Button button_salida;
     private Button button_create_xml;
@@ -43,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 crypt(v);
+                //ocultamos el teclado al presionar boton para mayor visibilidad
+                InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(textEncoded.getWindowToken(), 0);
             }
         });
 
@@ -57,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 escribirArchivo();
+                //vaciamos los text al crear xml
+                text.setText("");
+                textDecoded.setText("");
+                textEncoded.setText("");
             }
         });
     }
@@ -67,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
             String password = this.text.getText().toString();
             String encodedText;
             RSA encodeRsa = new RSA();
-
             encodeRsa.setContext(getBaseContext());
             encodeRsa.genKeyPair(1024);
             encodeRsa.saveToDiskPrivateKey("rsa.pri");
@@ -76,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             textEncoded.setText(encodedText);
 
         } catch (Exception e) {
+
             System.out.println("An error ocurred encrypting the password");
         }
     }
@@ -92,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
             decodedText = decodeRsa.Decrypt(password_desct);
             textDecoded.setText(decodedText);
         } catch (Exception e) {
-            System.out.println("error al desencriptar");
+
+            System.out.println("An error ocurred desencrypting the password");
         }
     }
 
@@ -100,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         String encriptado = this.textEncoded.getText().toString();
         String desencriptado = this.textDecoded.getText().toString();
         int cont = 1;
+        char simbolo = '"';
         Date date = new Date();
         DateFormat hourdateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
 
@@ -111,7 +119,10 @@ public class MainActivity extends AppCompatActivity {
                 OutputStreamWriter archivo = new OutputStreamWriter(getApplication().openFileOutput("prueba.xml", Context.MODE_PRIVATE));
                 archivo.write(xml);
                 archivo.close();
+
             } catch (Exception e) {
+
+                e.printStackTrace();
             }
         }
         if (comprobamosArchivo()) {
@@ -139,8 +150,9 @@ public class MainActivity extends AppCompatActivity {
                 archivo.write(newDataXml);
                 archivo.close();
                 lectura.close();
-                System.out.print(newDataXml);
+                Toast.makeText(this, "archivo XML creado", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
+
                 Log.e("Archivo", "error al escribir archivo");
             }
         }
