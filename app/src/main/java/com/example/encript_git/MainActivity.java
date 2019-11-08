@@ -2,6 +2,7 @@ package com.example.encript_git;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,10 +21,11 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-
+    //declaracion de elementos del DOM
     private Button button;
     private Button button_salida;
     private Button button_create_xml;
+    private Button button_resultado;
     private TextView text;
     private TextView textEncoded;
     private TextView textDecoded;
@@ -32,22 +34,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //agremamos valor mediante los ids
         this.text = findViewById(R.id.textEntrada);
         this.textEncoded = findViewById(R.id.textSalida);
         this.textDecoded = findViewById(R.id.textDesencriptado);
         this.button = findViewById(R.id.btnEntrada);
         this.button_salida = findViewById(R.id.btnSalida);
         this.button_create_xml = findViewById(R.id.btnXml);
+        this.button_resultado = findViewById(R.id.btnResultado);
+
+        //boton para ejecutar metodo encriptar
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 crypt(v);
-                //ocultamos el teclado al presionar boton para mayor visibilidad
+                //ocultamos el teclado al presionar boton encriptar para mayor visibilidad
                 InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(textEncoded.getWindowToken(), 0);
             }
         });
 
+        //boton para ejecutar metodo desencriptar
         button_salida.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,8 +72,17 @@ public class MainActivity extends AppCompatActivity {
                 textEncoded.setText("");
             }
         });
+
+        //boton para crear nuevo activity
+        button_resultado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enviarDatos();
+            }
+        });
     }
 
+    //metodo para encriptar texto
     public void crypt(View view) {
 
         try {
@@ -86,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //metodo para desencriptar
     public void descrypt(View view) {
         try {
             String password_desct = this.textEncoded.getText().toString(); //this.text.getText().toString();
@@ -103,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //metodo para generado de archivo XML
     public void escribirArchivo() {
         String encriptado = this.textEncoded.getText().toString();
         String desencriptado = this.textDecoded.getText().toString();
@@ -159,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //metodo auxiliar para validar si existe archivo si no existe lo crea
     private boolean comprobamosArchivo() {
         boolean estaCreado;
         try {
@@ -169,5 +188,16 @@ public class MainActivity extends AppCompatActivity {
             estaCreado = false;
         }
         return estaCreado;
+    }
+
+    //metodo para enviar los datos al otro activity
+    private void enviarDatos(){
+        Bundle bundle = new Bundle();
+        String encriptado_enviar = textEncoded.getText().toString();
+        String desencriptado_enviar = textDecoded.getText().toString();
+        Intent intent = new Intent (getApplicationContext(), Escritura.class);
+        intent.putExtra("encriptado",encriptado_enviar);
+        intent.putExtra("desencriptado",desencriptado_enviar);
+        startActivity(intent);
     }
 }
